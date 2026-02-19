@@ -1,0 +1,59 @@
+name: Build and Push Beta Branch Image
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - dependabot/**
+    paths-ignore:
+      - "README.md"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build-beta-branch:
+    runs-on: ubuntu-latest
+    env:
+      COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute branch tag
+        id: branch_tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME}"
+          safe="$(echo "${branch}" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's#[^a-z0-9._-]+#-#g; s#^-+##; s#-+$##')"
+          tag="beta-${safe}"
+          tag="${tag:0:120}"
+          tag="${tag%-}"
+          if [[ -z "${tag}" ]]; then
+            tag="beta-branch"
+          fi
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "Using image tag: ${tag}"
+
+      - name: Set image-version for this run
+        shell: bash
+        run: |
+          sed -i "s/^image-version:.*/image-version: ${{ steps.branch_tag.outputs.tag }}/" recipes/recipe.yml
+          grep -n "^image-version:" recipes/recipe.yml
+
+      - name: Build and push branch image
+        uses: blue-build/github-action@v1.11.0
+        with:
+          recipe: recipe.yml
+          cosign_private_key: ${{ secrets.SIGNING_SECRET }}
+          registry_token: ${{ github.token }}
+          pr_event_number: ${{ github.event.number }}

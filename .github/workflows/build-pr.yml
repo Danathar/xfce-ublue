@@ -17,5 +17,6 @@ jobs:
         uses: blue-build/github-action@v1.11.0
         with:
           recipe: recipe.yml
-          no-sign: true
+          push: false
+          build_opts: --no-sign
           registry_token: ${{ github.token }}
