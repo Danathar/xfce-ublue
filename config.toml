@@ -1,0 +1,7 @@
+[customizations]
+disk = { minsize = "40 GiB" }
+
+[[customizations.user]]
+  name = "xfc"
+  password = "changeme"
+  groups = ["wheel"]

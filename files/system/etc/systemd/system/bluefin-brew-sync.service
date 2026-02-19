@@ -1,0 +1,15 @@
+[Unit]
+Description=Install Bluefin curated Homebrew packages
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=!/var/lib/bluefin-brew-sync/done
+
+[Service]
+Type=oneshot
+Environment=TARGET_USER=1000
+ExecStart=/usr/bin/bash /usr/libexec/xfce-ublue/bluefin-brew-sync.sh
+StateDirectory=bluefin-brew-sync
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

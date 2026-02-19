@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+name: xfce
+
+description: >-
+  Universal Blue based XFCE image built with BlueBuild.
+
+base-image: ghcr.io/ublue-os/base-main
+image-version: latest
+
+modules:
+  - type: dnf
+    group-install:
+      with-optional: true
+      packages:
+        - xfce-desktop-environment
+    install:
+      packages:
+        - lightdm
+        - lightdm-gtk
+        - lightdm-gtk-greeter
+        - distrobox
+
+  - type: files
+    files:
+      - source: system
+        destination: /
+
+  - type: brew
+    brew-analytics: false
+
+  - type: default-flatpaks
+    configurations:
+      - notify: true
+        scope: system
+        repo:
+          name: flathub
+          title: Flathub (System)
+          url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        install:
+          - com.github.PintaProject.Pinta
+          - com.github.tchx84.Flatseal
+          - com.ranfdev.DistroShelf
+          - io.github.flattool.Ignition
+          - io.github.flattool.Warehouse
+          - io.github.kolunmi.Bazaar
+          - io.gitlab.adhami3310.Impression
+          - io.missioncenter.MissionCenter
+          - it.mijorus.smile
+          - org.gnome.Connections
+          - org.gnome.DejaDup
+          - org.gnome.Firmware
+          - org.gnome.Logs
+          - page.tesk.Refine
+
+  - type: systemd
+    system:
+      enabled:
+        - lightdm.service
+        - bluefin-brew-sync.service
+
+  - type: signing

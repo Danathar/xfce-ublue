@@ -1,0 +1,7 @@
+cosign.key
+.state/
+.cache/
+*.tmp
+/.bluebuild-scripts_*
+/oci/
+/output/

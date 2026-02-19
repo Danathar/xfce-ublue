@@ -1,0 +1,36 @@
+name: Build and Push Image
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * 0'
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+    strategy:
+      matrix:
+        recipe:
+          - recipe.yml
+    steps:
+      - name: Build image
+        uses: blue-build/github-action@v1.11.0
+        with:
+          recipe: ${{ matrix.recipe }}
+          cosign_private_key: ${{ secrets.SIGNING_SECRET }}
+          registry_token: ${{ github.token }}

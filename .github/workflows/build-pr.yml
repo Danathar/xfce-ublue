@@ -1,0 +1,21 @@
+name: Build PR Image
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build image for PR validation
+        uses: blue-build/github-action@v1.11.0
+        with:
+          recipe: recipe.yml
+          no-sign: true
+          registry_token: ${{ github.token }}
