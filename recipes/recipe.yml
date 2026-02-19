@@ -9,6 +9,9 @@ image-version: latest
 
 modules:
   - type: dnf
+    repos:
+      copr:
+        - ublue-os/packages
     group-install:
       with-optional: true
       packages:
@@ -19,6 +22,10 @@ modules:
         - lightdm-gtk
         - lightdm-gtk-greeter
         - distrobox
+        - uupd
+    remove:
+      packages:
+        - thunderbird
 
   - type: files
     files:
@@ -30,7 +37,7 @@ modules:
 
   - type: default-flatpaks
     configurations:
-      - notify: true
+      - notify: false
         scope: system
         repo:
           name: flathub
@@ -50,12 +57,15 @@ modules:
           - org.gnome.DejaDup
           - org.gnome.Firmware
           - org.gnome.Logs
+          - org.mozilla.Thunderbird
           - page.tesk.Refine
 
   - type: systemd
     system:
       enabled:
         - lightdm.service
-        - bluefin-brew-sync.service
+        - uupd.timer
+      disabled:
+        - rpm-ostreed-automatic.timer
 
   - type: signing

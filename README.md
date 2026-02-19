@@ -12,10 +12,8 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 - `distrobox`
 - Homebrew via BlueBuild `brew` module
 - Flatpaks via BlueBuild `default-flatpaks` module (system scope, Flathub)
-  - Bluefin-like curated subset, with Firefox excluded (RPM Firefox is included)
-- One-shot Bluefin-curated Homebrew sync via `bluefin-brew-sync.service`
-  - Homebrew: `cli` + `ide` curated sets
-  - Runs on first boot on the deployed system (not at image build time); let it complete before checking `brew list`
+  - XFCE-focused curated subset; avoids replacing core XFCE tools with GNOME app Flatpaks
+- Automatic ongoing updates handled by `uupd.timer` (brew, flatpak, distrobox, and system)
 - GitHub Actions build workflows in `.github/workflows/`
 
 ## Build Locally
@@ -212,3 +210,9 @@ Required setting a supported root filesystem (`--rootfs ext4`) when generating q
 - Add secret `SIGNING_SECRET` with contents of `cosign.key`.
 - Add secret `COSIGN_PASSWORD` with the password used to generate `cosign.key` (use empty string only if your key was created with empty password).
 - `build.yml` ignores README-only pushes.
+
+## Update Behavior
+
+- `uupd.timer` is enabled for automatic updates.
+- `rpm-ostreed-automatic.timer` is disabled to avoid duplicate system auto-update paths.
+- `uupd` configuration is managed at `files/system/etc/uupd/config.json`.
