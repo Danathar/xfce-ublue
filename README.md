@@ -94,7 +94,7 @@ virt-install \
   --vcpus 4 \
   --cpu host-passthrough \
   --import \
-  --disk path=/var/home/$USER/disk.qcow2,format=qcow2,bus=virtio \
+  --disk path=/home/$USER/disk.qcow2,format=qcow2,bus=virtio \
   --os-variant fedora-unknown \
   --network user,model=virtio \
   --graphics spice \
