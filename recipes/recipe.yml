@@ -12,6 +12,7 @@ modules:
     repos:
       copr:
         - ublue-os/packages
+      nonfree: rpmfusion
     group-install:
       with-optional: true
       packages:
@@ -22,6 +23,7 @@ modules:
         - lightdm-gtk
         - lightdm-gtk-greeter
         - distrobox
+        - broadcom-wl
         - uupd
     remove:
       packages:
