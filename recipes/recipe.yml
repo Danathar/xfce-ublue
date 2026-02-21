@@ -12,18 +12,15 @@ modules:
     repos:
       copr:
         - ublue-os/packages
-      nonfree: rpmfusion
     group-install:
       with-optional: true
       packages:
         - xfce-desktop-environment
     install:
       packages:
-        - lightdm
-        - lightdm-gtk
-        - lightdm-gtk-greeter
+        - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%OS_VERSION%.noarch.rpm
+        - b43-fwcutter
         - distrobox
-        - broadcom-wl
         - uupd
     remove:
       packages:
