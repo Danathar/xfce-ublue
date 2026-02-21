@@ -5,6 +5,10 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 > This is **not** an official Universal Blue image.
 > It is a personal experimental project.
 
+## Current Status (February 21, 2026)
+
+As of February 21, 2026, this image builds and works. It has not been extensively tested yet, but it appears ready for normal use.
+
 ## Included
 
 - Base image: `ghcr.io/ublue-os/base-main`
