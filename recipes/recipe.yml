@@ -21,7 +21,6 @@ modules:
         - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%OS_VERSION%.noarch.rpm
         - b43-fwcutter
         - distrobox
-        - starship
         - uupd
     remove:
       packages:
@@ -33,6 +32,10 @@ modules:
     files:
       - source: system
         destination: /
+
+  - type: script
+    scripts:
+      - install-starship.sh
 
   - type: brew
     brew-analytics: false
