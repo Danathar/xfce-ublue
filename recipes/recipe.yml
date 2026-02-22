@@ -24,6 +24,8 @@ modules:
         - uupd
     remove:
       packages:
+        - dnfdragora
+        - dnfdragora-updater
         - thunderbird
 
   - type: files
