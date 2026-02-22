@@ -2,7 +2,7 @@
 
 # Show a terminal notice when bootc has a newer staged deployment.
 _bootc_staged_notice_main() {
-  local bootc_json staged_present booted_present
+  local status_json status_source staged_present booted_present
   local booted_ref staged_ref booted_digest staged_digest
   local booted_version staged_version
 
@@ -16,25 +16,48 @@ _bootc_staged_notice_main() {
     return 0
   fi
 
-  command -v bootc >/dev/null 2>&1 || return 0
   command -v jq >/dev/null 2>&1 || return 0
 
-  bootc_json="$(bootc status --json 2>/dev/null)" || return 0
-  [ -n "$bootc_json" ] || return 0
+  if command -v bootc >/dev/null 2>&1; then
+    status_json="$(bootc status --json 2>/dev/null)" && [ -n "$status_json" ] && status_source="bootc"
+  fi
 
-  staged_present="$(printf '%s\n' "$bootc_json" | jq -r '.status.staged != null')"
-  booted_present="$(printf '%s\n' "$bootc_json" | jq -r '.status.booted != null')"
-  [ "$staged_present" = "true" ] || return 0
-  [ "$booted_present" = "true" ] || return 0
+  # Some systems restrict `bootc status` to root; use rpm-ostree JSON when available.
+  if [ -z "$status_source" ] && command -v rpm-ostree >/dev/null 2>&1; then
+    status_json="$(rpm-ostree status --json 2>/dev/null)" && [ -n "$status_json" ] && status_source="rpm-ostree"
+  fi
 
-  booted_ref="$(printf '%s\n' "$bootc_json" | jq -r '.status.booted.image.image // .status.booted.image["image-reference"] // .status.booted.imageReference // .status.booted["image-reference"] // ""')"
-  staged_ref="$(printf '%s\n' "$bootc_json" | jq -r '.status.staged.image.image // .status.staged.image["image-reference"] // .status.staged.imageReference // .status.staged["image-reference"] // ""')"
+  [ -n "$status_source" ] || return 0
 
-  booted_digest="$(printf '%s\n' "$bootc_json" | jq -r '.status.booted.image.digest // .status.booted.digest // .status.booted.imageDigest // ""')"
-  staged_digest="$(printf '%s\n' "$bootc_json" | jq -r '.status.staged.image.digest // .status.staged.digest // .status.staged.imageDigest // ""')"
+  if [ "$status_source" = "bootc" ]; then
+    staged_present="$(printf '%s\n' "$status_json" | jq -r '.status.staged != null')"
+    booted_present="$(printf '%s\n' "$status_json" | jq -r '.status.booted != null')"
+    [ "$staged_present" = "true" ] || return 0
+    [ "$booted_present" = "true" ] || return 0
 
-  booted_version="$(printf '%s\n' "$bootc_json" | jq -r '.status.booted.version // ""')"
-  staged_version="$(printf '%s\n' "$bootc_json" | jq -r '.status.staged.version // ""')"
+    booted_ref="$(printf '%s\n' "$status_json" | jq -r '.status.booted.image.image // .status.booted.image["image-reference"] // .status.booted.imageReference // .status.booted["image-reference"] // ""')"
+    staged_ref="$(printf '%s\n' "$status_json" | jq -r '.status.staged.image.image // .status.staged.image["image-reference"] // .status.staged.imageReference // .status.staged["image-reference"] // ""')"
+
+    booted_digest="$(printf '%s\n' "$status_json" | jq -r '.status.booted.image.digest // .status.booted.digest // .status.booted.imageDigest // ""')"
+    staged_digest="$(printf '%s\n' "$status_json" | jq -r '.status.staged.image.digest // .status.staged.digest // .status.staged.imageDigest // ""')"
+
+    booted_version="$(printf '%s\n' "$status_json" | jq -r '.status.booted.version // ""')"
+    staged_version="$(printf '%s\n' "$status_json" | jq -r '.status.staged.version // ""')"
+  else
+    staged_present="$(printf '%s\n' "$status_json" | jq -r '[.deployments[]? | select(.staged == true)] | length > 0')"
+    booted_present="$(printf '%s\n' "$status_json" | jq -r '[.deployments[]? | select(.booted == true)] | length > 0')"
+    [ "$staged_present" = "true" ] || return 0
+    [ "$booted_present" = "true" ] || return 0
+
+    booted_ref="$(printf '%s\n' "$status_json" | jq -r '.deployments[]? | select(.booted == true) | .["container-image-reference"] // .origin // .id // ""' | head -n 1)"
+    staged_ref="$(printf '%s\n' "$status_json" | jq -r '.deployments[]? | select(.staged == true) | .["container-image-reference"] // .origin // .id // ""' | head -n 1)"
+
+    booted_digest="$(printf '%s\n' "$status_json" | jq -r '.deployments[]? | select(.booted == true) | .digest // .checksum // ""' | head -n 1)"
+    staged_digest="$(printf '%s\n' "$status_json" | jq -r '.deployments[]? | select(.staged == true) | .digest // .checksum // ""' | head -n 1)"
+
+    booted_version="$(printf '%s\n' "$status_json" | jq -r '.deployments[]? | select(.booted == true) | .version // ""' | head -n 1)"
+    staged_version="$(printf '%s\n' "$status_json" | jq -r '.deployments[]? | select(.staged == true) | .version // ""' | head -n 1)"
+  fi
 
   # If bootc cannot provide enough identifying data, stay silent.
   [ -n "${staged_ref}${staged_digest}${staged_version}" ] || return 0
