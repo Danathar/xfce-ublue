@@ -220,6 +220,9 @@ Root cause was stale tag usage (`localhost/xfce:latest` still pointing to an old
 4. bootc-image-builder manifest error for `/boot`
 Required setting a supported root filesystem (`--rootfs ext4`) when generating qcow2.
 
+5. Staged-update terminal notice did not behave like Aurora/Bluefin
+`starship` is not available as a normal DNF package in this build context, so the prompt notice failed when installed that way. We now install `starship` from the upstream release tarball at build time and use a Starship custom module to show `New deployment staged` when an update is pending.
+
 ## GitHub Actions Notes
 
 - `build.yml`: builds/pushes image on push/schedule/manual.

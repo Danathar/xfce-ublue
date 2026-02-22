@@ -4,6 +4,7 @@ on:
   pull_request:
     paths-ignore:
       - 'README.md'
+      - '**/README.md'
 
 permissions:
   contents: read
