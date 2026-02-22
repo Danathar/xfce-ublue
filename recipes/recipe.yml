@@ -18,19 +18,24 @@ modules:
         - xfce-desktop-environment
     install:
       packages:
-        - lightdm
-        - lightdm-gtk
-        - lightdm-gtk-greeter
+        - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%OS_VERSION%.noarch.rpm
+        - b43-fwcutter
         - distrobox
         - uupd
     remove:
       packages:
+        - dnfdragora
+        - dnfdragora-updater
         - thunderbird
 
   - type: files
     files:
       - source: system
         destination: /
+
+  - type: script
+    scripts:
+      - install-starship.sh
 
   - type: brew
     brew-analytics: false

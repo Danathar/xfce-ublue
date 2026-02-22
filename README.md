@@ -9,6 +9,14 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 As of February 21, 2026, this image builds and works. It has not been extensively tested yet, but it appears ready for normal use.
 
+## Dell D630 Wi-Fi Test Branch
+
+For older Broadcom-based laptops (like some Dell Latitude D630 units), this repository has a test branch:
+
+- `feat/d630-wifi-compat`
+
+That branch enables RPM Fusion nonfree and adds `broadcom-wl` to match the Broadcom STA-style approach commonly used on Debian/MX for legacy Broadcom adapters.
+
 ## Included
 
 - Base image: `ghcr.io/ublue-os/base-main`
