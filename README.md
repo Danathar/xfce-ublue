@@ -4,7 +4,7 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 > [!NOTE]
 > This is **not** an official Universal Blue image.  
-> As of right now, this builds and runs, and you can use it. The installer is not as smooth or quick as I would like it to be (be patient if it seems like it is being slow... it is not), but that is an upstream Anaconda issue. Just be aware of the First Boot Summary issues.
+> As of right now, this builds and runs, and you can use it. The installer is not as smooth or quick as I would like it to be (be patient if it seems like it's being slow... it's not), but that's an upstream Anaconda issue. Just be aware of the First Boot Summary issues and the part about delayed startup on first or second boot.
 
 ## What You Get
 
@@ -36,6 +36,9 @@ bluebuild generate-iso \
   -o output \
   image ghcr.io/danathar/xfce:latest
 ```
+
+> [!NOTE]
+> BlueBuild's ISO generator currently uses the community utility [`JasonN3/build-container-installer`](https://github.com/JasonN3/build-container-installer), not Fedora's official `bootc-image-builder` path documented by Fedora/bootc: <https://osbuild.org/docs/bootc/>.
 
 3. Boot the ISO and install.
 

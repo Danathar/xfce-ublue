@@ -27,6 +27,9 @@ bluebuild generate-iso \
   image ghcr.io/danathar/xfce:latest
 ```
 
+> [!NOTE]
+> The current BlueBuild `generate-iso` path uses the community project [`JasonN3/build-container-installer`](https://github.com/JasonN3/build-container-installer). Fedora's official bootc image-builder path is documented here: <https://osbuild.org/docs/bootc/>.
+
 Build from local recipe (builds image first, then ISO):
 
 ```bash
