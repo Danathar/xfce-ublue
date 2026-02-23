@@ -4,6 +4,7 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 > [!NOTE]
 > This is **not** an official Universal Blue image.  
+> It is built from official/trusted upstream sources and repos (Universal Blue base image, Fedora/RPM Fusion packages, Flathub, and Homebrew).
 > As of right now, this builds and runs, and you can use it. The installer is not as smooth or quick as I would like it to be (be patient if it seems like it's being slow... it's not), but that's an upstream Anaconda issue. Just be aware of the First Boot Summary issues and the part about delayed startup on first or second boot.
 
 ## What You Get
@@ -58,5 +59,6 @@ More details and known quirks: [`docs/troubleshooting.md`](docs/troubleshooting.
 - Installer ISO install: [`docs/install-iso.md`](docs/install-iso.md)
 - Disk image install (qcow2/raw): [`docs/install-disk-image.md`](docs/install-disk-image.md)
 - Troubleshooting and known behaviors: [`docs/troubleshooting.md`](docs/troubleshooting.md)
+- Automatic update/build cadence: [`docs/automatic-updates.md`](docs/automatic-updates.md)
 - CI, signing, and update-path config: [`docs/ci-and-signing.md`](docs/ci-and-signing.md)
 - Using this repo as template or fork: [`docs/repo-template-or-fork.md`](docs/repo-template-or-fork.md)
