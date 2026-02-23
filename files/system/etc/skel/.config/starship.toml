@@ -1,8 +1,11 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
+# Keep prompt blocks separated by a blank line.
 add_newline = true
 
+# Default per-user prompt module for staged update visibility.
 [custom.update]
+# If newest deployment is not booted yet, a reboot is pending.
 when = "/usr/bin/rpm-ostree status --json | /usr/bin/jq -e \".deployments[0].booted == false\" > /dev/null;"
 command = "echo \"New deployment staged\""
 symbol = "!"

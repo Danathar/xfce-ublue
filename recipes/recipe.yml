@@ -1,47 +1,64 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+# Final published image name (`ghcr.io/<owner>/<name>:<tag>`).
 name: xfce
 
 description: >-
   Universal Blue based XFCE image built with BlueBuild.
 
+# Universal Blue bootc/ostree base.
 base-image: ghcr.io/ublue-os/base-main
+# Main branch keeps `latest`; beta workflow rewrites this per branch.
 image-version: latest
 
 modules:
+  # Install and remove RPM content in the immutable image layer.
   - type: dnf
     repos:
       copr:
+        # Needed for uupd and other ublue helper packages.
         - ublue-os/packages
     group-install:
+      # Pull the full XFCE desktop group including optional components.
       with-optional: true
       packages:
         - xfce-desktop-environment
     install:
       packages:
+        # Legacy Broadcom support path (D630-class hardware).
         - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%OS_VERSION%.noarch.rpm
         - b43-fwcutter
+        # Containerized app/dev workflows.
         - distrobox
+        # Unified updater used by Universal Blue images.
+        # Runtime policy is configured in /etc/uupd/config.json.
         - uupd
     remove:
       packages:
+        # Not useful on ostree/bootc images; can hang or confuse users.
         - dnfdragora
         - dnfdragora-updater
+        # Prefer Flatpak Thunderbird in this image.
         - thunderbird
 
+  # Overlay files from `files/system` into the image filesystem.
   - type: files
     files:
       - source: system
         destination: /
 
+  # Run custom build-time scripts from `files/scripts`.
   - type: script
     scripts:
       - install-starship.sh
 
+  # Enable Homebrew support in the image.
   - type: brew
     brew-analytics: false
 
+  # Seed system Flatpaks on first boot.
   - type: default-flatpaks
     configurations:
+      # `notify: false` avoids first-boot popup noise.
       - notify: false
         scope: system
         repo:
@@ -49,6 +66,7 @@ modules:
           title: Flathub (System)
           url: https://dl.flathub.org/repo/flathub.flatpakrepo
         install:
+          # Curated set intended to complement XFCE defaults.
           - com.github.PintaProject.Pinta
           - com.github.tchx84.Flatseal
           - com.ranfdev.DistroShelf
@@ -65,12 +83,17 @@ modules:
           - org.mozilla.Thunderbird
           - page.tesk.Refine
 
+  # Enable/disable system units in the built image.
   - type: systemd
     system:
       enabled:
+        # Primary display manager.
         - lightdm.service
+        # Ongoing update timer (system/flatpak/brew/distrobox).
         - uupd.timer
       disabled:
+        # Disabled to avoid overlapping auto-update paths with uupd.
         - rpm-ostreed-automatic.timer
 
+  # Sign pushed images with cosign in CI.
   - type: signing

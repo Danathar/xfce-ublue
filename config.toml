@@ -1,7 +1,12 @@
+# bootc-image-builder customizations used for qcow2/raw/installer outputs.
 [customizations]
+# Minimum target disk size for generated images.
 disk = { minsize = "40 GiB" }
 
 [[customizations.user]]
+# Default local user created in generated disk images/installer flow.
   name = "xfc"
+# Change this before long-term use or public distribution.
   password = "changeme"
+# `wheel` grants sudo/admin access.
   groups = ["wheel"]

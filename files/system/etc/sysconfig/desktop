@@ -1,2 +1,3 @@
+# Keep legacy desktop manager environment defaults explicit.
 DESKTOP="XFCE"
 DISPLAYMANAGER="LIGHTDM"

@@ -1,9 +1,13 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
+# Keep prompt blocks separated by a blank line.
 add_newline = true
 
+# Show staged-update status in prompt, similar to Aurora/Bluefin behavior.
 [custom.update]
+# If newest deployment is not booted yet, a reboot is pending.
 when = "/usr/bin/rpm-ostree status --json | /usr/bin/jq -e \".deployments[0].booted == false\" > /dev/null;"
+# Short message shown inside the prompt segment.
 command = "echo \"New deployment staged\""
 symbol = "!"
 format = " $symbol [($output)]($style) "

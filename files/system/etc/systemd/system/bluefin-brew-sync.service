@@ -1,15 +1,21 @@
 [Unit]
+# One-time import of curated Homebrew packages from Bluefin defaults.
 Description=Install Bluefin curated Homebrew packages
+# Network is required because fallback path may pull a container image.
 After=network-online.target
 Wants=network-online.target
+# Do not rerun after first successful completion.
 ConditionPathExists=!/var/lib/bluefin-brew-sync/done
 
 [Service]
 Type=oneshot
+# Default target user (UID 1000) can be overridden via drop-in env.
 Environment=TARGET_USER=1000
 ExecStart=/usr/bin/bash /usr/libexec/xfce-ublue/bluefin-brew-sync.sh
+# Persistent state for completion marker.
 StateDirectory=bluefin-brew-sync
 RemainAfterExit=yes
 
 [Install]
+# Run during normal system boot.
 WantedBy=multi-user.target
