@@ -3,9 +3,11 @@
 Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 > [!NOTE]
-> This is **not** an official Universal Blue image.  
-> It is built from official/trusted upstream sources and repos (Universal Blue base image, Fedora/RPM Fusion packages, Flathub, and Homebrew).
-> As of right now, this builds and runs, and you can use it. The installer is not as smooth or quick as I would like it to be (be patient if it seems like it's being slow... it's not hung.), but that's an upstream Anaconda issue. Just be aware of the First Boot Summary issues and the part about delayed startup on first or second boot.
+> This is **not** an official Universal Blue image.
+> It is built from official and trusted upstream sources (the Universal Blue base image, Fedora/RPM Fusion packages, Flathub, and Homebrew).
+> Currently, this image builds and runs successfully. The installer is not as smooth or quick as I would like (please be patient if it seems slow; it is not hung), but this is a known upstream Anaconda issue. Please review the "First Boot Summary" regarding potential startup delays during the initial boots.
+>
+> This repository was developed using some directed AI assistance, although its contents have been manually tested and inspected. I believe it's important for anyone using open-source tools on GitHub to have this context before relying on them.
 
 ## What You Get
 
