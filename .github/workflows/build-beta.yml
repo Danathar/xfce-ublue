@@ -54,7 +54,7 @@ jobs:
           grep -n "^image-version:" recipes/recipe.yml
 
       - name: Build and push branch image
-        uses: blue-build/github-action@v1.11.0
+        uses: blue-build/github-action@v1.11.1
         with:
           recipe: recipe.yml
           cosign_private_key: ${{ secrets.SIGNING_SECRET }}

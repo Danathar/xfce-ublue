@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build image for PR validation
-        uses: blue-build/github-action@v1.11.0
+        uses: blue-build/github-action@v1.11.1
         with:
           recipe: recipe.yml
           push: false
