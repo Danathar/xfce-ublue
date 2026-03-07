@@ -14,7 +14,7 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 - Base image: `ghcr.io/ublue-os/base-main`
 - XFCE desktop (`xfce-desktop-environment` + `lightdm` + `lightdm-gtk-greeter`)
 - Broadcom legacy Wi-Fi support tooling (`rpmfusion-nonfree-release` + `b43-fwcutter`)
-- Homebrew via BlueBuild `brew` module
+- Homebrew via Universal Blue `brew` OCI image
 - Flatpaks via BlueBuild `default-flatpaks` module (system scope, Flathub)
 - Automatic updates via `uupd.timer` (system, brew, flatpak, distrobox)
 - Signed image publishing workflows in `.github/workflows/`
