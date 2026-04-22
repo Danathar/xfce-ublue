@@ -55,6 +55,9 @@ modules:
   - type: containerfile
     snippets:
       - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
+      # Ship Bluefin's curated Brewfiles into the image so bluefin-brew-sync
+      # has them available at first boot without a runtime container pull.
+      - COPY --from=ghcr.io/ublue-os/bluefin:latest /usr/share/ublue-os/homebrew /usr/share/ublue-os/homebrew
 
   # Seed system Flatpaks on first boot.
   - type: default-flatpaks

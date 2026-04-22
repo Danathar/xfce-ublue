@@ -8,12 +8,8 @@ set -euo pipefail
 # Marker written after a successful (or intentionally skipped) run so the
 # corresponding systemd unit does not execute every boot.
 STATE_FILE="/var/lib/bluefin-brew-sync/done"
-# Temporary workspace for any container extraction fallback logic.
-WORK_DIR="/var/tmp/bluefin-brew-sync"
 # User to receive brew packages; default is UID 1000 (first local user).
 TARGET_USER="${TARGET_USER:-1000}"
-# Bluefin image used as a fallback source for curated Brewfiles.
-BLUEFIN_IMAGE="${BLUEFIN_IMAGE:-ghcr.io/ublue-os/bluefin:latest}"
 
 # Allow TARGET_USER to be either a numeric UID or a literal username.
 if [[ "${TARGET_USER}" =~ ^[0-9]+$ ]]; then
@@ -36,45 +32,16 @@ if [[ -z "${TARGET_HOME}" ]] || [[ ! -d "${TARGET_HOME}" ]]; then
   exit 0
 fi
 
-mkdir -p "${WORK_DIR}"
+# From here on, any exit (success or failure) counts as "attempted" — mark done
+# so the unit does not retry forever on a failed brew bundle. The retry-later
+# exits above intentionally do NOT reach this trap.
+trap 'touch "${STATE_FILE}"' EXIT
+
 brew_dir=""
 
-# Preferred source: curated Brewfiles already shipped in this image.
+# Curated Brewfiles are copied into the image at build time (recipe.yml).
 if [[ -d "/usr/share/ublue-os/homebrew" ]]; then
   brew_dir="/usr/share/ublue-os/homebrew"
-fi
-
-# Fallback source: pull and extract curated Brewfiles from Bluefin.
-if [[ -z "${brew_dir}" ]]; then
-  if ! command -v podman >/dev/null 2>&1; then
-    echo "podman not available and /usr/share/ublue-os/homebrew missing; skipping curated brew sync."
-    touch "${STATE_FILE}"
-    exit 0
-  fi
-
-  rm -rf "${WORK_DIR:?}/bluefin-homebrew"
-  mkdir -p "${WORK_DIR}/bluefin-homebrew"
-
-  if ! podman pull --quiet "${BLUEFIN_IMAGE}" >/dev/null; then
-    echo "Failed to pull ${BLUEFIN_IMAGE}; skipping curated brew sync."
-    touch "${STATE_FILE}"
-    exit 0
-  fi
-
-  container_id="$(podman create "${BLUEFIN_IMAGE}" true)"
-  # Ensure temporary container is always cleaned up.
-  cleanup() {
-    podman rm -f "${container_id}" >/dev/null 2>&1 || true
-  }
-  trap cleanup EXIT
-
-  if podman cp "${container_id}:/usr/share/ublue-os/homebrew/." "${WORK_DIR}/bluefin-homebrew/" >/dev/null 2>&1; then
-    brew_dir="${WORK_DIR}/bluefin-homebrew"
-  else
-    echo "Could not extract /usr/share/ublue-os/homebrew from ${BLUEFIN_IMAGE}; skipping curated brew sync."
-    touch "${STATE_FILE}"
-    exit 0
-  fi
 fi
 
 # Resolve the "regular user tools" Brewfile from known Bluefin names first.
