@@ -1,7 +1,7 @@
 [Unit]
 # One-time import of curated Homebrew packages from Bluefin defaults.
 Description=Install Bluefin curated Homebrew packages
-# Network is required because fallback path may pull a container image.
+# Network is required because brew bundle may need to download packages.
 After=network-online.target
 Wants=network-online.target
 # Do not rerun after first successful completion.
