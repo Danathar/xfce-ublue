@@ -25,17 +25,14 @@ Removed `fedora-release-xfce` and `fedora-release-identity-xfce` from recipe ins
 2. LightDM failed on boot (`/var/cache/lightdm` + `/var/lib/lightdm-data` errors)
 Added tmpfiles overlay at `files/system/usr/lib/tmpfiles.d/zz-lightdm-local.conf` to create required LightDM directories with correct ownership.
 
-3. Missing runtime dirs for `atd` and `plocate`
-Added tmpfiles entries for `/var/spool/at` and `/var/lib/plocate` so `atd.service` and `plocate-updatedb.service` stop failing after deploy.
-
-4. DNFDragora updater hanging on ostree image
+3. DNFDragora updater hanging on ostree image
 Removed `dnfdragora` and `dnfdragora-updater` from the image since system updates are handled via ostree/bootc workflows.
 
-5. New fixes not appearing in qcow2
+4. New fixes not appearing in qcow2
 Root cause was stale tag usage (`localhost/xfce:latest` still pointing to an older image). The fix was to retag the newest loaded image ID before generating qcow2.
 
-6. `bootc-image-builder` manifest error for `/boot`
+5. `bootc-image-builder` manifest error for `/boot`
 Required setting a supported root filesystem (`--rootfs ext4`) when generating qcow2.
 
-7. Staged-update terminal notice did not behave like Aurora/Bluefin
+6. Staged-update terminal notice did not behave like Aurora/Bluefin
 `starship` is not available as a normal DNF package in this build context, so the prompt notice failed when installed that way. We now install `starship` from the upstream release tarball at build time and use a Starship custom module to show `New deployment staged` when an update is pending.
