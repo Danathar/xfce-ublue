@@ -47,18 +47,45 @@ jobs:
           echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
           echo "Using image tag: ${tag}"
 
-      - name: Set image-version for this run
+      - name: Create beta-tagged recipe
         shell: bash
         run: |
-          sed -i "s/^image-version:.*/image-version: ${{ steps.branch_tag.outputs.tag }}/" recipes/recipe.yml
-          grep -n "^image-version:" recipes/recipe.yml
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path("recipes/recipe.yml")
+          output = Path("recipes/recipe-beta.yml")
+          tag = "${{ steps.branch_tag.outputs.tag }}"
+          text = source.read_text()
+
+          if re.search(r"^alt-tags:\s*$", text, flags=re.MULTILINE):
+            raise SystemExit(
+              "recipe.yml already defines alt-tags; update build-beta.yml "
+              "to merge branch tags intentionally."
+            )
+
+          text, count = re.subn(
+            r"^(image-version:\s*.+)$",
+            r"\1\nalt-tags:\n  - " + tag,
+            text,
+            count=1,
+            flags=re.MULTILINE,
+          )
+          if count != 1:
+            raise SystemExit("Could not locate image-version in recipes/recipe.yml")
+
+          output.write_text(text)
+          print(f"Wrote {output}")
+          PY
+          sed -n '8,16p' recipes/recipe-beta.yml
 
       - name: Build and push branch image
         uses: blue-build/github-action@v1.11.1
         with:
-          recipe: recipe.yml
-          # Preserve the sed-modified recipe.yml from the previous step;
-          # the action otherwise re-runs actions/checkout and wipes it.
+          recipe: recipe-beta.yml
+          # Preserve the generated recipe-beta.yml from the previous step;
+          # the action otherwise re-runs actions/checkout and loses it.
           skip_checkout: true
           cosign_private_key: ${{ secrets.SIGNING_SECRET }}
           registry_token: ${{ github.token }}

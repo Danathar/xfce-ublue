@@ -7,7 +7,7 @@ description: >-
 
 # Universal Blue bootc/ostree base.
 base-image: ghcr.io/ublue-os/base-main
-# Main branch keeps `latest`; beta workflow rewrites this per branch.
+# Keep `latest` as the base-image tag; beta workflow injects branch alt-tags.
 image-version: latest
 
 modules:
