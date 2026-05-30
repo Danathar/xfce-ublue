@@ -29,6 +29,8 @@ modules:
         - b43-fwcutter
         # Containerized app/dev workflows.
         - distrobox
+        # Host firmware update daemon used by the GNOME Firmware Flatpak.
+        - fwupd
         # Unified updater used by Universal Blue images.
         # Runtime policy is configured in /etc/uupd/config.json.
         - uupd
