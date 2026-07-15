@@ -24,27 +24,27 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 Use this path for most users.
 
-1. Install `bluebuild` CLI (if needed). Install instructions: [blue-build/cli#installation](https://github.com/blue-build/cli#installation)
+The ISO boots into a live XFCE desktop; double-click **Install to Hard
+Drive** to run the Anaconda Web UI installer (the same mechanism Bazzite,
+Aurora, and Bluefin use) and deploy `ghcr.io/danathar/xfce:latest` directly
+to disk.
+
+Build it via the [`Titanoboa ISO Experiment`](.github/workflows/build-iso-experiment.yml)
+GitHub Actions workflow (recommended), or locally:
 
 ```bash
-podman run --pull always --rm ghcr.io/blue-build/cli:latest-installer | bash
-bluebuild --version
+sudo podman build \
+  --cap-add sys_admin --security-opt label=disable \
+  -t localhost/xfce-installer:latest installer/
 ```
 
-2. Build installer ISO from published image:
+...then generate the ISO with [`ublue-os/titanoboa`](https://github.com/ublue-os/titanoboa)
+pointed at `localhost/xfce-installer:latest`.
 
-```bash
-bluebuild generate-iso \
-  --variant kinoite \
-  --iso-name xfce-ublue.iso \
-  -o output \
-  image ghcr.io/danathar/xfce:latest
-```
-
-> [!NOTE]
-> BlueBuild's ISO generator currently uses the community utility [`JasonN3/build-container-installer`](https://github.com/JasonN3/build-container-installer), not Fedora's official `bootc-image-builder` path documented by Fedora/bootc: <https://osbuild.org/docs/bootc/>.
-
-3. Boot the ISO and install.
+> [!IMPORTANT]
+> Use a target disk of **at least 64GB**. Smaller disks (tested at 20GB and
+> 40GB) failed mid-install on ostree's free-space check — the uncompressed
+> image content needs more headroom than the ~8.6GB ISO size suggests.
 
 Detailed instructions and caveats: [`docs/install-iso.md`](docs/install-iso.md).
 
