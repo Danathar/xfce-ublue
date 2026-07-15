@@ -1,0 +1,48 @@
+name: Titanoboa ISO Experiment
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+        with:
+          tool-cache: false
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Build installer image
+        run: |
+          sudo podman build --cap-add sys_admin --security-opt label=disable \
+            -t localhost/xfce-installer:latest installer/
+
+      - name: Build ISO
+        id: build
+        uses: ublue-os/titanoboa@main
+        with:
+          image-ref: localhost/xfce-installer:latest
+          iso-dest: xfce-live.iso
+
+      - name: Checksum ISO
+        run: |
+          sha256sum "${{ steps.build.outputs.iso-dest }}" | tee "${{ steps.build.outputs.iso-dest }}-CHECKSUM"
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xfce-live-iso
+          path: |
+            ${{ steps.build.outputs.iso-dest }}
+            ${{ steps.build.outputs.iso-dest }}-CHECKSUM
+          retention-days: 3
