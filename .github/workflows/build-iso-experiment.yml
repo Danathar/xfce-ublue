@@ -2,6 +2,9 @@ name: Titanoboa ISO Experiment
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - experiment/titanoboa-iso
 
 permissions:
   contents: read
