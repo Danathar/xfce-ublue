@@ -3,8 +3,8 @@ grub2:
   timeout: 10
   entries:
     - name: "XFCE Live ISO"
-      linux: "/images/pxeboot/vmlinuz quiet rhgb root=live:CDLABEL=XFCE-Live enforcing=0 rd.live.image"
+      linux: "/images/pxeboot/vmlinuz quiet rhgb root=live:CDLABEL=XFCE-Live enforcing=0 rd.live.image console=ttyS0,115200n8 console=tty0"
       initrd: "/images/pxeboot/initrd.img"
     - name: "XFCE Live ISO (Safe Graphics Mode)"
-      linux: "/images/pxeboot/vmlinuz quiet rhgb root=live:CDLABEL=XFCE-Live enforcing=0 rd.live.image nomodeset"
+      linux: "/images/pxeboot/vmlinuz quiet rhgb root=live:CDLABEL=XFCE-Live enforcing=0 rd.live.image nomodeset console=ttyS0,115200n8 console=tty0"
       initrd: "/images/pxeboot/initrd.img"
