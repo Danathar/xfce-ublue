@@ -4,13 +4,19 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
       - experiment/titanoboa-iso
     paths-ignore:
       - 'README.md'
       - '**/README.md'
       - 'docs/**'
       - '**/*.md'
+  # Trigger off the main image build finishing (rather than push: [main]
+  # directly) so the ISO always embeds the image that build actually
+  # published, instead of racing it and possibly grabbing the prior :latest.
+  workflow_run:
+    workflows: ["Build and Push Image"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: write
@@ -21,6 +27,7 @@ concurrency:
 
 jobs:
   build-iso:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
@@ -29,6 +36,8 @@ jobs:
           tool-cache: false
 
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Build installer image
         run: |
@@ -37,7 +46,8 @@ jobs:
 
       - name: Build ISO
         id: build
-        uses: ublue-os/titanoboa@main
+        # ublue-os/titanoboa has no tagged releases; pinned to main's HEAD as of 2026-07-15.
+        uses: ublue-os/titanoboa@5c457c3d0518bd17e754be0fd98a60d29d26abb4
         with:
           image-ref: localhost/xfce-installer:latest
           iso-dest: xfce-live.iso
@@ -52,7 +62,8 @@ jobs:
         run: |
           set -euo pipefail
           TAG=iso-latest
-          NOTES="Automatically built from commit ${GITHUB_SHA} on $(date -u +%Y-%m-%dT%H:%M:%SZ). This release is overwritten on every build; it is not versioned."
+          BUILD_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
+          NOTES="Automatically built from commit ${BUILD_SHA} on $(date -u +%Y-%m-%dT%H:%M:%SZ). This release is overwritten on every build; it is not versioned."
           if gh release view "$TAG" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
             gh release edit "$TAG" --repo "${GITHUB_REPOSITORY}" --notes "$NOTES"
           else

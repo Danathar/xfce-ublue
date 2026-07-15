@@ -25,8 +25,10 @@ desktop-environment branching:
 - `titanoboa_hook_preinitramfs.sh` — no-op (Bazzite uses this slot for a
   secureboot kernel swap this image doesn't need).
 - `titanoboa_hook_postrootfs.sh` — installs `anaconda-live` and writes a
-  kickstart using the native `ostreecontainer` directive, then adds an
-  autostart entry that launches `liveinst` (Anaconda Web UI) on login.
+  kickstart using the native `ostreecontainer` directive (deploy) plus a
+  `%post bootc switch` step (so the installed system tracks the real
+  registry image instead of the live session's local container storage).
+  `anaconda-live` provides its own "Install to Hard Drive" desktop icon.
 - `flatpaks` — flatpaks to install into the *live session* (currently
   empty; unrelated to what ships in the installed image).
 

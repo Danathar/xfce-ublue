@@ -118,10 +118,10 @@ Set in `config.toml`:
 
 ```toml
 [customizations]
-disk = { minsize = "40 GiB" }
+disk = { minsize = "64 GiB" }
 ```
 
-Default in this repository: `40 GiB`.
+Default in this repository: `64 GiB`.
 
 ## Add or Change Users in `config.toml`
 
