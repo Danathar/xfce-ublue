@@ -42,9 +42,7 @@ sudo podman build \
 pointed at `localhost/xfce-installer:latest`.
 
 > [!IMPORTANT]
-> Use a target disk of **at least 64GB**. Smaller disks (tested at 20GB and
-> 40GB) failed mid-install on ostree's free-space check — the uncompressed
-> image content needs more headroom than the ~8.6GB ISO size suggests.
+> Use a target disk of **at least 64GB**.
 
 Detailed instructions and caveats: [`docs/install-iso.md`](docs/install-iso.md).
 

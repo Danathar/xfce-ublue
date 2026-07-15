@@ -29,6 +29,7 @@ image; Titanoboa itself then converts that layered image into a bootable ISO.
 - `podman`
 - `sudo` (the installer image build needs `--cap-add sys_admin --security-opt label=disable`)
 - A published image, for example `ghcr.io/danathar/xfce:latest`
+- A target disk of **at least 64GB**
 
 ## Build Installer ISO
 
@@ -65,28 +66,14 @@ Output ISO path: wherever you point `TITANOBOA_OUTPUT_DIR` / `iso-dest`
    installation method, storage, account creation, then **Erase data and install**.
 4. When it finishes, reboot and remove the installation media.
 
-## Target Disk Size
-
-> [!IMPORTANT]
-> Use a target disk of **at least 64GB**. This was found through direct
-> testing, not guessing: a 20GB disk and even a 40GB disk both failed
-> partway through installation with
-> `ostree: ... min-free-space-percent '3%' would be exceeded`. The
-> uncompressed image content that `ostree container image deploy` writes out
-> during install is substantially larger than the ISO's compressed size
-> (~8.6GB) would suggest — this image's XFCE desktop + bundled Homebrew
-> content needs real headroom well beyond a "reads about right" disk size
-> guess. 64GB installed successfully with room to spare; smaller may work
-> but hasn't been verified.
-
 ## Installer Caveats
 
+- Use a target disk of **at least 64GB**. Smaller disks can fail partway
+  through installation with an ostree free-space error.
 - The installer needs enough RAM to run Anaconda, Firefox, and the live XFCE
-  session concurrently. 4GB was tight in testing; 6GB+ is safer.
-- The known Anaconda Wi-Fi list UI issue from the previous (JasonN3-based)
-  installer path has not been re-verified against this Anaconda Web UI path.
-  If you hit network-selection trouble, continue install without network and
-  configure Wi-Fi after first boot.
+  session concurrently; 6GB or more is recommended.
+- If you hit Wi-Fi network-selection trouble during install, continue
+  without network and configure Wi-Fi after first boot.
 
 ## First Boot Behavior After ISO Install
 
