@@ -22,29 +22,19 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 ## Quick Start (Installer ISO)
 
-Use this path for most users.
+**[Download the latest ISO](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso)**
+— no forking or building required.
 
 The ISO boots into a live XFCE desktop; double-click **Install to Hard
 Drive** to run the Anaconda Web UI installer (the same mechanism Bazzite,
 Aurora, and Bluefin use) and deploy `ghcr.io/danathar/xfce:latest` directly
 to disk.
 
-Build it via the [`Titanoboa ISO Experiment`](.github/workflows/build-iso-experiment.yml)
-GitHub Actions workflow (recommended), or locally:
-
-```bash
-sudo podman build \
-  --cap-add sys_admin --security-opt label=disable \
-  -t localhost/xfce-installer:latest installer/
-```
-
-...then generate the ISO with [`ublue-os/titanoboa`](https://github.com/ublue-os/titanoboa)
-pointed at `localhost/xfce-installer:latest`.
-
 > [!IMPORTANT]
 > Use a target disk of **at least 64GB**.
 
-Detailed instructions and caveats: [`docs/install-iso.md`](docs/install-iso.md).
+Detailed instructions, caveats, and how to build your own ISO:
+[`docs/install-iso.md`](docs/install-iso.md).
 
 ## First Boot Summary
 

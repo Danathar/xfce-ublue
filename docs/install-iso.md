@@ -24,7 +24,17 @@ Containerfile and build script that layer the live-boot tooling (dracut-live,
 livesys-scripts, GRUB2/EFI staging, Anaconda) on top of the published xfce
 image; Titanoboa itself then converts that layered image into a bootable ISO.
 
-## Prerequisites
+## Download
+
+The latest built ISO is published here, no forking or building required:
+
+**[Download xfce-live.iso](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso)**
+
+This is a rolling release — the file is overwritten with each build from
+`main`, so the link always points to the current version. Checksum:
+[`xfce-live.iso-CHECKSUM`](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso-CHECKSUM).
+
+## Prerequisites (building your own)
 
 - `podman`
 - `sudo` (the installer image build needs `--cap-add sys_admin --security-opt label=disable`)
@@ -33,13 +43,15 @@ image; Titanoboa itself then converts that layered image into a bootable ISO.
 
 ## Build Installer ISO
 
+Only needed if you've customized the recipe and want your own image in the
+ISO — otherwise use the [download](#download) above.
+
 ### Via GitHub Actions (recommended)
 
-The [`Titanoboa ISO Experiment`](../.github/workflows/build-iso-experiment.yml)
+The [`Build and Publish Live ISO`](../.github/workflows/build-iso.yml)
 workflow builds the installer image and generates the ISO on a GitHub-hosted
 runner — this avoids needing the privileged local `podman build` and the
-large scratch disk space on your own machine. Trigger it and download the
-`xfce-live-iso` artifact from the run (artifacts expire after 3 days).
+large scratch disk space on your own machine.
 
 ### Locally
 
