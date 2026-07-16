@@ -2,14 +2,6 @@ name: Build and Publish Live ISO
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - experiment/titanoboa-iso
-    paths-ignore:
-      - 'README.md'
-      - '**/README.md'
-      - 'docs/**'
-      - '**/*.md'
   # Trigger off the main image build finishing (rather than push: [main]
   # directly) so the ISO always embeds the image that build actually
   # published, instead of racing it and possibly grabbing the prior :latest.
