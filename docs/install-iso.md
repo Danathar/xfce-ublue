@@ -38,6 +38,9 @@ artifact (ISO + checksum) from that run's Summary page.
 - Requires a GitHub login (artifacts aren't publicly downloadable without one).
 - Artifacts expire after 90 days; if a link has gone stale, revisit the
   pointer page above for the current one.
+- GitHub always wraps artifact downloads in a `.zip`, regardless of what's
+  inside — this is a GitHub platform behavior, not specific to this ISO.
+  Extract it to get `xfce-live.iso` and `xfce-live.iso-CHECKSUM`.
 
 ## Prerequisites (building your own)
 
