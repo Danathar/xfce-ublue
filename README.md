@@ -52,6 +52,7 @@ More details and known quirks: [`docs/troubleshooting.md`](docs/troubleshooting.
 
 - Local builds: [`docs/build-locally.md`](docs/build-locally.md)
 - Installer ISO install: [`docs/install-iso.md`](docs/install-iso.md)
+- Try the ISO in a VM (libvirt/virt-manager): [`docs/install-vm.md`](docs/install-vm.md)
 - Disk image install (qcow2/raw): [`docs/install-disk-image.md`](docs/install-disk-image.md)
 - Troubleshooting and known behaviors: [`docs/troubleshooting.md`](docs/troubleshooting.md)
 - Automatic update/build cadence: [`docs/automatic-updates.md`](docs/automatic-updates.md)

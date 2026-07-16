@@ -42,6 +42,10 @@ artifact (ISO + checksum) from that run's Summary page.
   inside — this is a GitHub platform behavior, not specific to this ISO.
   Extract it to get `xfce-live.iso` and `xfce-live.iso-CHECKSUM`.
 
+To try it in a local VM first, see
+[Try the ISO in a VM](install-vm.md) for a ready-to-run `virt-install`
+command (it handles the UEFI/Secure-Boot/disk-size requirements for you).
+
 ## Prerequisites (building your own)
 
 - `podman`
