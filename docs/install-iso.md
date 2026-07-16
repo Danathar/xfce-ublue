@@ -85,6 +85,15 @@ Output ISO path: wherever you point `TITANOBOA_OUTPUT_DIR` / `iso-dest`
 
 ## Installing
 
+> [!IMPORTANT]
+> This ISO is **UEFI-only** — it has no legacy BIOS boot support. Many
+> hypervisors default new VMs to legacy BIOS, which will report the ISO as
+> not bootable even though the file itself is fine. Enable UEFI firmware
+> for the VM before booting it (e.g. in virt-manager: VM details → Overview
+> → Firmware → pick a UEFI x86_64 option; equivalent settings exist in
+> VirtualBox, VMware, etc.). Real hardware from roughly the last decade
+> already boots UEFI by default.
+
 1. Boot the ISO. It reaches a live XFCE desktop automatically.
 2. Double-click **Install to Hard Drive** on the desktop.
 3. Follow the Anaconda Web UI wizard (opens in Firefox): language, date/time,
@@ -93,6 +102,7 @@ Output ISO path: wherever you point `TITANOBOA_OUTPUT_DIR` / `iso-dest`
 
 ## Installer Caveats
 
+- **UEFI boot required** — no legacy BIOS support. See the note above.
 - Use a target disk of **at least 64GB**. Smaller disks can fail partway
   through installation with an ostree free-space error.
 - The installer needs enough RAM to run Anaconda, Firefox, and the live XFCE
