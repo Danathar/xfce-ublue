@@ -1,0 +1,17 @@
+# Builds a Titanoboa-compatible live/installer image on top of the published
+# xfce image, embedding the same image as the install payload.
+#
+# run with: podman build --cap-add sys_admin --security-opt label=disable \
+#   -t localhost/xfce-installer:latest installer/
+
+ARG BASE_IMAGE=${BASE_IMAGE:-ghcr.io/danathar/xfce:latest}
+ARG INSTALL_IMAGE_PAYLOAD=${INSTALL_IMAGE_PAYLOAD:-ghcr.io/danathar/xfce:latest}
+
+FROM $BASE_IMAGE
+ARG BASE_IMAGE
+ARG INSTALL_IMAGE_PAYLOAD
+RUN --mount=type=bind,source=./.,target=/src \
+    env \
+    BASE_IMAGE="$BASE_IMAGE" \
+    INSTALL_IMAGE_PAYLOAD="$INSTALL_IMAGE_PAYLOAD" \
+    /src/build.sh

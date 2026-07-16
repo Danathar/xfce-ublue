@@ -1,0 +1,67 @@
+name: Build and Publish Live ISO
+
+on:
+  workflow_dispatch:
+  # Trigger off the main image build finishing (rather than push: [main]
+  # directly) so the ISO always embeds the image that build actually
+  # published, instead of racing it and possibly grabbing the prior :latest.
+  workflow_run:
+    workflows: ["Build and Push Image"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-iso:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+        with:
+          tool-cache: false
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Build installer image
+        run: |
+          sudo podman build --cap-add sys_admin --security-opt label=disable \
+            -t localhost/xfce-installer:latest installer/
+
+      - name: Build ISO
+        id: build
+        # ublue-os/titanoboa has no tagged releases; pinned to main's HEAD as of 2026-07-15.
+        uses: ublue-os/titanoboa@5c457c3d0518bd17e754be0fd98a60d29d26abb4
+        with:
+          image-ref: localhost/xfce-installer:latest
+          iso-dest: xfce-live.iso
+
+      - name: Checksum ISO
+        run: |
+          sha256sum "${{ steps.build.outputs.iso-dest }}" | tee "${{ steps.build.outputs.iso-dest }}-CHECKSUM"
+
+      - name: Publish ISO to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG=iso-latest
+          BUILD_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
+          NOTES="Automatically built from commit ${BUILD_SHA} on $(date -u +%Y-%m-%dT%H:%M:%SZ). This release is overwritten on every build; it is not versioned."
+          if gh release view "$TAG" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "${GITHUB_REPOSITORY}" --notes "$NOTES"
+          else
+            gh release create "$TAG" --repo "${GITHUB_REPOSITORY}" \
+              --title "Live ISO (latest)" --notes "$NOTES"
+          fi
+          gh release upload "$TAG" \
+            "${{ steps.build.outputs.iso-dest }}" "${{ steps.build.outputs.iso-dest }}-CHECKSUM" \
+            --repo "${GITHUB_REPOSITORY}" --clobber

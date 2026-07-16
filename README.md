@@ -22,31 +22,19 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 ## Quick Start (Installer ISO)
 
-Use this path for most users.
+**[Download the latest ISO](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso)**
+— no forking or building required.
 
-1. Install `bluebuild` CLI (if needed). Install instructions: [blue-build/cli#installation](https://github.com/blue-build/cli#installation)
+The ISO boots into a live XFCE desktop; double-click **Install to Hard
+Drive** to run the Anaconda Web UI installer (the same mechanism Bazzite,
+Aurora, and Bluefin use) and deploy `ghcr.io/danathar/xfce:latest` directly
+to disk.
 
-```bash
-podman run --pull always --rm ghcr.io/blue-build/cli:latest-installer | bash
-bluebuild --version
-```
+> [!IMPORTANT]
+> Use a target disk of **at least 64GB**.
 
-2. Build installer ISO from published image:
-
-```bash
-bluebuild generate-iso \
-  --variant kinoite \
-  --iso-name xfce-ublue.iso \
-  -o output \
-  image ghcr.io/danathar/xfce:latest
-```
-
-> [!NOTE]
-> BlueBuild's ISO generator currently uses the community utility [`JasonN3/build-container-installer`](https://github.com/JasonN3/build-container-installer), not Fedora's official `bootc-image-builder` path documented by Fedora/bootc: <https://osbuild.org/docs/bootc/>.
-
-3. Boot the ISO and install.
-
-Detailed instructions and caveats: [`docs/install-iso.md`](docs/install-iso.md).
+Detailed instructions, caveats, and how to build your own ISO:
+[`docs/install-iso.md`](docs/install-iso.md).
 
 ## First Boot Summary
 
