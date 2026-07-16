@@ -82,3 +82,56 @@ ls /usr/share/edk2/ovmf/ /usr/share/OVMF/ /usr/share/qemu/ 2>/dev/null | grep -i
 
 Pick the plain (non-`secboot`/`secure`) `*CODE*` file and its matching
 `*VARS*` template.
+
+## Optional: teach virt-manager/virt-install to recognize this ISO
+
+Distro ISOs from Aurora, Bluefin, and Silverblue "just work" in virt-manager's
+GUI wizard because those projects' ISOs are registered in
+[`osinfo-db`](https://gitlab.com/libosinfo/osinfo-db), the database
+virt-manager and `virt-install` use to auto-detect an ISO and apply correct
+defaults (firmware, RAM, disk size) instead of guessing. This repo's ISO
+isn't in the upstream database (that requires an upstream submission), but
+you can register it locally in one step, after which both virt-install and
+the GUI wizard recognize it automatically:
+
+```bash
+mkdir -p ~/.config/osinfo/os/danathar.github.io
+cp docs/osinfo/xfce-ublue-live.xml ~/.config/osinfo/os/danathar.github.io/
+osinfo-query os short-id=xfce-ublue-live   # confirms it registered
+```
+
+This is a one-time, per-machine setup (it lives in your home directory, not
+in the ISO itself — anyone who wants this needs to run it once on their own
+machine). Once registered:
+
+- **virt-install** can use `--osinfo xfce-ublue-live` instead of the manual
+  `--boot loader=...` flags, and `--boot firmware=efi` alone resolves to the
+  correct non-Secure-Boot firmware (verified: the entry declares
+  `secure-boot supported="no"`, and libvirt honors it when picking which
+  OVMF variant to use):
+
+  ```bash
+  virt-install \
+    --name xfce-ublue-live \
+    --memory 6144 \
+    --vcpus 4 \
+    --machine q35 \
+    --boot firmware=efi \
+    --osinfo xfce-ublue-live \
+    --disk path="$HOME/.local/share/libvirt/images/xfce-ublue-live.qcow2",size=64,format=qcow2,bus=virtio \
+    --disk path=/path/to/xfce-live.iso,device=cdrom \
+    --network user,model=virtio \
+    --sound default \
+    --graphics spice \
+    --video virtio \
+    --noautoconsole
+  ```
+
+- **virt-manager's "New VM" wizard** matches the ISO by its volume label
+  (`XFCE-Live`, set in [`installer/iso.yaml`](../installer/iso.yaml)) when
+  you browse to the file, and should apply the same correct firmware and
+  resource defaults automatically — no manual firmware dropdown editing
+  needed.
+
+If you'd rather not register anything locally, the one-shot command above
+this section works with zero setup and is the simpler default.
