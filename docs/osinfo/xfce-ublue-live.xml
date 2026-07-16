@@ -14,6 +14,7 @@
     <firmware arch="x86_64" type="efi">
       <feature id="secure-boot" supported="no"/>
     </firmware>
+    <firmware arch="x86_64" type="bios" supported="false"/>
     <resources arch="x86_64">
       <minimum>
         <n-cpus>2</n-cpus>

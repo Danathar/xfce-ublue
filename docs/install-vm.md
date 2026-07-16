@@ -102,13 +102,19 @@ osinfo-query os short-id=xfce-ublue-live   # confirms it registered
 
 This is a one-time, per-machine setup (it lives in your home directory, not
 in the ISO itself — anyone who wants this needs to run it once on their own
-machine). Once registered:
+machine). Once registered, **no manual firmware flags are needed at all** —
+`virt-install`/virt-manager pick UEFI automatically purely from OS detection.
+This isn't guesswork: `virt-install`'s shared code
+(`guest.py`'s `prefers_uefi()`) only auto-enables UEFI when the detected OS's
+osinfo entry explicitly declares BIOS unsupported (`<firmware type="bios"
+supported="false"/>` — the same declaration Windows 11's own osinfo entry
+uses, which is why creating a Windows 11 VM auto-selects UEFI). Our entry
+declares that, and it was verified end-to-end with `virsh dumpxml` on an
+actual defined domain, using **no `--boot firmware=` flag whatsoever**:
 
-- **virt-install** can use `--osinfo xfce-ublue-live` instead of the manual
-  `--boot loader=...` flags, and `--boot firmware=efi` alone resolves to the
-  correct non-Secure-Boot firmware (verified: the entry declares
-  `secure-boot supported="no"`, and libvirt honors it when picking which
-  OVMF variant to use):
+- **virt-install** needs only `--osinfo xfce-ublue-live` — everything else
+  is resolved automatically, including picking the non-Secure-Boot OVMF
+  variant (from the entry's `secure-boot supported="no"` declaration):
 
   ```bash
   virt-install \
@@ -116,7 +122,6 @@ machine). Once registered:
     --memory 6144 \
     --vcpus 4 \
     --machine q35 \
-    --boot firmware=efi \
     --osinfo xfce-ublue-live \
     --disk path="$HOME/.local/share/libvirt/images/xfce-ublue-live.qcow2",size=64,format=qcow2,bus=virtio \
     --disk path=/path/to/xfce-live.iso,device=cdrom \
@@ -129,9 +134,11 @@ machine). Once registered:
 
 - **virt-manager's "New VM" wizard** matches the ISO by its volume label
   (`XFCE-Live`, set in [`installer/iso.yaml`](../installer/iso.yaml)) when
-  you browse to the file, and should apply the same correct firmware and
-  resource defaults automatically — no manual firmware dropdown editing
-  needed.
+  you browse to the file. Since the wizard and `virt-install` share the same
+  `guest.py` firmware-selection code, it should apply UEFI automatically too
+  — this part specifically (the GUI click-through) is not yet visually
+  confirmed, since testing requires a real ISO file; the CLI behavior above
+  is fully verified.
 
 If you'd rather not register anything locally, the one-shot command above
 this section works with zero setup and is the simpler default.
