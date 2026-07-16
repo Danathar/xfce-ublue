@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<libosinfo version="0.0.1">
+  <os id="http://danathar.github.io/xfce-ublue/live">
+    <short-id>xfce-ublue-live</short-id>
+    <name>xfce-ublue Live</name>
+    <vendor>danathar</vendor>
+    <family>linux</family>
+    <distro>fedora</distro>
+    <media arch="x86_64">
+      <iso>
+        <volume-id>XFCE-Live</volume-id>
+      </iso>
+    </media>
+    <firmware arch="x86_64" type="efi">
+      <feature id="secure-boot" supported="no"/>
+    </firmware>
+    <resources arch="x86_64">
+      <minimum>
+        <n-cpus>2</n-cpus>
+        <ram>4294967296</ram>
+        <storage>68719476736</storage>
+      </minimum>
+      <recommended>
+        <n-cpus>4</n-cpus>
+        <ram>6442450944</ram>
+        <storage>68719476736</storage>
+      </recommended>
+    </resources>
+  </os>
+</libosinfo>

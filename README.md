@@ -35,7 +35,15 @@ Aurora, and Bluefin use) and deploy `ghcr.io/danathar/xfce:latest` directly
 to disk.
 
 > [!IMPORTANT]
-> Use a target disk of **at least 64GB**.
+> This ISO is **UEFI-only** — it has no legacy BIOS boot support. Many
+> hypervisors default new VMs to legacy BIOS, which will report the ISO as
+> not bootable even though the file itself is fine. Enable UEFI firmware
+> for the VM before booting it (e.g. in virt-manager: VM details → Overview
+> → Firmware → pick a UEFI x86_64 option; equivalent settings exist in
+> VirtualBox, VMware, etc.). Real hardware from roughly the last decade
+> already boots UEFI by default.
+>
+> Also use a target disk of **at least 64GB**.
 
 Detailed instructions, caveats, and how to build your own ISO:
 [`docs/install-iso.md`](docs/install-iso.md).
