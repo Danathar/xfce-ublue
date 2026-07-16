@@ -21,6 +21,10 @@ If you want your own image in your own GitHub account, you have two options:
 7. Push to `main` and wait for `Build and Push Image` workflow to complete.
 8. Verify image exists in GHCR:
    - `ghcr.io/<your-github-username>/<image-name>:latest`
+9. `Build and Publish Live ISO` runs automatically right after (it derives the
+   image reference from `recipes/recipe.yml` and your repo owner, so it
+   embeds your image — no separate edit needed). The ISO publishes to a
+   rolling `iso-latest` GitHub Release.
 
 ## Option B: Fork
 
@@ -31,6 +35,8 @@ If you want your own image in your own GitHub account, you have two options:
 3. Confirm `Actions` are enabled for the fork.
 4. Push a commit to your fork `main` and confirm build success.
 5. Your image is published under your account namespace in GHCR.
+6. `Build and Publish Live ISO` runs automatically afterward and embeds your
+   fork's image — see Option A step 9.
 
 ## Template vs Fork Decision
 

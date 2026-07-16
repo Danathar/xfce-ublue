@@ -63,6 +63,11 @@ sudo podman build \
   -t localhost/xfce-installer:latest installer/
 ```
 
+This defaults to embedding `ghcr.io/danathar/xfce:latest`. If you've forked or
+templated this repo, pass your own image with
+`--build-arg BASE_IMAGE=... --build-arg INSTALL_IMAGE_PAYLOAD=...` (the
+`build-iso.yml` CI workflow does this automatically from `recipes/recipe.yml`).
+
 Then generate the ISO with Titanoboa (see [ublue-os/titanoboa](https://github.com/ublue-os/titanoboa)
 for the current invocation — either its GitHub Action or `main.sh` locally,
 pointed at `localhost/xfce-installer:latest`).
