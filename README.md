@@ -22,8 +22,12 @@ Fedora bootc/Universal Blue style image using XFCE, built with BlueBuild.
 
 ## Quick Start (Installer ISO)
 
-**[Download the latest ISO](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso)**
-— no forking or building required.
+**[Get the latest ISO](https://github.com/Danathar/xfce-ublue/releases/tag/iso-latest)**
+— no forking or building required. That page always links to the current
+build's workflow run; open it and download the `xfce-live-iso` artifact
+from its Summary. Requires a GitHub login (GitHub Releases can't host a
+file this large, so it's an Actions artifact instead — see
+[`docs/install-iso.md`](docs/install-iso.md#download) for why).
 
 The ISO boots into a live XFCE desktop; double-click **Install to Hard
 Drive** to run the Anaconda Web UI installer (the same mechanism Bazzite,

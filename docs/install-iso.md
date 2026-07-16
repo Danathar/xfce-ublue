@@ -26,13 +26,18 @@ image; Titanoboa itself then converts that layered image into a bootable ISO.
 
 ## Download
 
-The latest built ISO is published here, no forking or building required:
+**[Latest ISO build](https://github.com/Danathar/xfce-ublue/releases/tag/iso-latest)**
+— no forking or building required.
 
-**[Download xfce-live.iso](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso)**
+GitHub Releases reject files over 2GB, and this ISO is well past that, so
+the actual file can't be attached there directly. That link is instead a
+stable pointer page whose notes are updated on every build with a link to
+the current workflow run — open it, then download the `xfce-live-iso`
+artifact (ISO + checksum) from that run's Summary page.
 
-This is a rolling release — the file is overwritten with each build from
-`main`, so the link always points to the current version. Checksum:
-[`xfce-live.iso-CHECKSUM`](https://github.com/Danathar/xfce-ublue/releases/download/iso-latest/xfce-live.iso-CHECKSUM).
+- Requires a GitHub login (artifacts aren't publicly downloadable without one).
+- Artifacts expire after 90 days; if a link has gone stale, revisit the
+  pointer page above for the current one.
 
 ## Prerequisites (building your own)
 
