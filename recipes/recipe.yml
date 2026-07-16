@@ -100,6 +100,23 @@ modules:
       disabled:
         # Disabled to avoid overlapping auto-update paths with uupd.
         - rpm-ostreed-automatic.timer
+      masked:
+        # Redundant with systemd-journald (which handles all logging) and
+        # misconfigured for ostree: rsyslog's imjournal module repeatedly
+        # fails to write its state file to the read-only `/`, spamming
+        # `open() failed ... Read-only file system` on every boot.
+        - rsyslog.service
+        # Fails on every ostree/bootc system: `/` is an overlayfs, and this
+        # legacy unit tries a remount overlayfs rejects
+        # (`overlay: No changes allowed in reconfigure`). Already non-functional
+        # here, so masking just removes the boot-time failure noise.
+        - systemd-remount-fs.service
+        # `mcelog` doesn't support AMD Zen (family 17h+) and exits immediately
+        # with `does not support this processor`. Masked to avoid the failure;
+        # the kernel's own MCE/EDAC handling covers hardware-error logging.
+        # Note: this also disables mcelog on Intel hosts, where it would work;
+        # unmask it (`systemctl unmask mcelog.service`) if you want it there.
+        - mcelog.service
 
   # Sign pushed images with cosign in CI.
   - type: signing
