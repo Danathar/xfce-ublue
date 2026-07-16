@@ -60,20 +60,41 @@ jobs:
         run: |
           sha256sum "${{ steps.build.outputs.iso-dest }}" | tee "${{ steps.build.outputs.iso-dest }}-CHECKSUM"
 
-      - name: Publish ISO to release
+      # GitHub Releases reject assets over 2GB; this ISO is well past that, so
+      # the actual file goes to a normal Actions artifact instead. The
+      # iso-latest release holds no binary -- it's kept as a stable,
+      # bookmarkable URL whose notes always point at the current run's
+      # artifact, since artifact URLs themselves change on every build.
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xfce-live-iso
+          path: |
+            ${{ steps.build.outputs.iso-dest }}
+            ${{ steps.build.outputs.iso-dest }}-CHECKSUM
+          retention-days: 90
+
+      - name: Update latest-build pointer release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           TAG=iso-latest
           BUILD_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
-          NOTES="Automatically built from commit ${BUILD_SHA} on $(date -u +%Y-%m-%dT%H:%M:%SZ). This release is overwritten on every build; it is not versioned."
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          NOTES="Latest live ISO build: commit ${BUILD_SHA}, built $(date -u +%Y-%m-%dT%H:%M:%SZ).
+
+          GitHub Releases can't host this file (it's well over the 2GB
+          per-asset limit), so the ISO is attached to the build itself as a
+          workflow artifact instead of a release asset.
+
+          **[Download the ISO](${RUN_URL})** -- open the run above, then
+          download the \`xfce-live-iso\` artifact from its Summary page.
+          Requires a GitHub login; artifacts expire after 90 days (revisit
+          this page for a link to the current build if one has expired)."
           if gh release view "$TAG" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
             gh release edit "$TAG" --repo "${GITHUB_REPOSITORY}" --notes "$NOTES"
           else
             gh release create "$TAG" --repo "${GITHUB_REPOSITORY}" \
-              --title "Live ISO (latest)" --notes "$NOTES"
+              --title "Live ISO (latest build pointer)" --notes "$NOTES"
           fi
-          gh release upload "$TAG" \
-            "${{ steps.build.outputs.iso-dest }}" "${{ steps.build.outputs.iso-dest }}-CHECKSUM" \
-            --repo "${GITHUB_REPOSITORY}" --clobber
