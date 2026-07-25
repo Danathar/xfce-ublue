@@ -27,7 +27,7 @@ jobs:
     env:
       COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       - name: Compute branch tag
         id: branch_tag
