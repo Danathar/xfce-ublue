@@ -66,7 +66,7 @@ jobs:
       # bookmarkable URL whose notes always point at the current run's
       # artifact, since artifact URLs themselves change on every build.
       - name: Upload ISO artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: xfce-live-iso
           path: |
