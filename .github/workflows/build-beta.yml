@@ -81,7 +81,7 @@ jobs:
           sed -n '8,16p' recipes/recipe-beta.yml
 
       - name: Build and push branch image
-        uses: blue-build/github-action@v1.12.0
+        uses: blue-build/github-action@v1.13.0
         with:
           recipe: recipe-beta.yml
           # Preserve the generated recipe-beta.yml from the previous step;
